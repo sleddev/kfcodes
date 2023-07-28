@@ -4,6 +4,7 @@ import { serverURL } from "./config";
 import { InputCard } from "./components/InputCard";
 import { LoginCard } from "./components/LoginCard";
 import { GridCard } from "./components/GridCard";
+import { Footer } from "./components/Footer";
 
 async function fetchCodes() {
   let res = await fetch(serverURL + '/codes')
@@ -41,15 +42,15 @@ const App: Component<{}> = (props) => {
 
   return (<>
     <Header codes={codes} />
-    <div class="h-12"></div>
+    <div class="h-12 flex-shrink-0"></div>
     <Show when={loggedIn()} fallback={
       <LoginCard password={password} setPassword={setPassword} setLoggedIn={setLoggedIn} />
     }>
       <InputCard password={password} refetch={refetch} setLoggedIn={setLoggedIn} setPassword={setPassword}/>
-      <div class="h-12"></div>
+      <div class="h-12 flex-shrink-0"></div>
       <GridCard donelist={donelist}/>
-      <div class="h-48"></div>
     </Show>
+    <Footer />
   </>);
 };
 
