@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { serverURL } from "./config";
 import { InputCard } from "./components/InputCard";
 import { LoginCard } from "./components/LoginCard";
+import { GridCard } from "./components/GridCard";
 
 async function fetchCodes() {
   let res = await fetch(serverURL + '/codes')
@@ -17,20 +18,25 @@ async function fetchCodes() {
   }
 }
 
-//TODO: server side backups
-//TODO: grid card
 //TODO: footer?
 //TODO: PWA
 
 const App: Component<{}> = (props) => {
   const [password, setPassword] = createSignal(localStorage.getItem('password') ?? '')
-  const [loggedIn, setLoggedIn] = createSignal(localStorage.getItem('password'));
+  const [loggedIn, setLoggedIn] = createSignal(localStorage.getItem('password') !== null);
   const [data, { refetch }] = createResource(fetchCodes);
   const [codes, setCodes] = createSignal<number[]>(JSON.parse(localStorage.getItem('codes') ?? '[]'))
+  const [donelist, setDonelist] = createSignal<boolean[]>(JSON.parse(localStorage.getItem('donelist') ?? '[]'))
   
   createEffect(on(data, (v) => {
-    if ((v ?? []).length > 0) setCodes(v ?? [])
+    if ((v ?? []).length === 0) return; 
+    setCodes(v ?? [])
+    setDonelist(new Array(99).fill(0).map((_, i) => {
+      console.log((v ?? []).includes(i + 1))
+      return (v ?? []).includes(i + 1)
+    }))
   }))
+  createEffect(on(donelist, v => localStorage.setItem('donelist', JSON.stringify(v))))
   DEV && createEffect(() => console.log(codes()))
 
   return (<>
@@ -40,6 +46,9 @@ const App: Component<{}> = (props) => {
       <LoginCard password={password} setPassword={setPassword} setLoggedIn={setLoggedIn} />
     }>
       <InputCard password={password} refetch={refetch} setLoggedIn={setLoggedIn} setPassword={setPassword}/>
+      <div class="h-12"></div>
+      <GridCard donelist={donelist}/>
+      <div class="h-48"></div>
     </Show>
   </>);
 };

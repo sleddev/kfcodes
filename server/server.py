@@ -106,17 +106,3 @@ async def setpassword(response: Response, admin: str, new: str):
   refreshenv()
   return {'message': 'Password changed'}
 
-
-##### Backups #####
-
-@app.get('/backup/list')
-async def list_backups():
-  pass
-
-@app.get('/backup/new')
-async def new_backup():
-  pass
-
-@app.get('/backup/restore')
-async def restore_backup():
-  pass
